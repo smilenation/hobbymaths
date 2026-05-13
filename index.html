@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>hobbymaths - 수학이 취미가 되는 나라</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Noto+Sans+KR:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans KR', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            overflow-x: hidden;
+        }
+        .glass-light {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.07);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #2563eb 0%, #db2777 50%, #f59e0b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            opacity: 0.8;
+        }
+        .card-hover:hover {
+            transform: translateY(-8px);
+            background: rgba(255, 255, 255, 0.95);
+            border-color: #3b82f6;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+        }
+        .floating { animation: float 5s ease-in-out infinite; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <nav class="fixed w-full z-50 glass-light border-b border-gray-200/50">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <!-- User Logo Container -->
+                <div class="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center shadow-lg overflow-hidden border-2 border-white shrink-0">
+                    <img src="LEE.png" 
+                         alt="hobbymaths logo" 
+                         class="w-full h-full object-cover"
+                         onerror="this.onerror=null; this.src='https://placehold.co/100x100/3b82f6/white?text=LEE';">
+                </div>
+                <span class="text-2xl font-black tracking-tighter text-slate-800">hobbymaths</span>
+            </div>
+            <div class="hidden md:flex items-center space-x-10 text-sm font-bold text-slate-600">
+                <a href="#" class="hover:text-blue-600 transition-colors">매일 챌린지</a>
+                <a href="#" class="hover:text-pink-600 transition-colors">수학 갤러리</a>
+                <a href="#" class="hover:text-amber-600 transition-colors">플레이그라운드</a>
+                <button class="bg-slate-900 text-white px-7 py-3 rounded-2xl font-bold hover:bg-blue-600 transition-all duration-300 shadow-lg shadow-slate-900/10">
+                    시작하기
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <canvas id="bg-canvas"></canvas>
+    
+    <section class="relative pt-48 pb-24 px-6">
+        <div class="max-w-7xl mx-auto text-center">
+            <div class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white border border-blue-100 text-xs font-bold mb-10 text-blue-600 shadow-sm">
+                <span class="relative flex h-2.5 w-2.5">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-500"></span>
+                </span>
+                지적인 즐거움을 찾는 1,242명의 수학자들
+            </div>
+            <h1 class="text-6xl md:text-8xl font-black mb-10 tracking-tighter leading-tight text-slate-900">
+                수학이 <br/>
+                <span class="gradient-text">취미가 되는 나라</span>
+            </h1>
+            <p class="text-xl md:text-2xl text-slate-500 mb-14 max-w-2xl mx-auto leading-relaxed font-normal">
+                세상을 이해하는 가장 순수한 도구, 수학이 당신의 새로운 취미가 됩니다.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-6">
+                <button class="px-10 py-5 bg-blue-600 text-white rounded-3xl font-black text-xl shadow-2xl shadow-blue-500/40 hover:scale-105 transition-all">
+                    취미활동 하기
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid lg:grid-cols-2 gap-12 items-start mb-24">
+                <!-- Sandbox Card -->
+                <div class="bg-white p-10 rounded-[3rem] shadow-2xl shadow-blue-900/5 border border-white sticky top-28">
+                    <h3 class="text-3xl font-black mb-8 flex items-center gap-4 text-slate-800">
+                        <span class="w-12 h-12 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center">
+                            <i class="fas fa-pencil-alt"></i>
+                        </span>
+                        수식으로 그리는 생각
+                    </h3>
+                    <p class="text-slate-500 mb-10 font-medium leading-relaxed">복잡한 증명도, 간단한 정리도 좋습니다. 당신만의 언어로 수학을 기록해보세요.</p>
+                    <div class="space-y-8">
+                        <div class="relative">
+                            <textarea id="math-input" class="w-full bg-slate-50 border border-slate-200 rounded-3xl p-6 text-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-500/10 font-mono text-xl h-40 transition-all placeholder:text-slate-300" placeholder="LaTeX 수식을 입력해보세요..."></textarea>
+                            <div class="absolute bottom-4 right-6 text-xs text-slate-400 font-bold">LIVE PREVIEW</div>
+                        </div>
+                        <div id="math-preview" class="w-full h-48 bg-gradient-to-br from-slate-50 to-white rounded-[2.5rem] flex items-center justify-center text-5xl p-10 overflow-hidden border border-slate-100 shadow-inner text-slate-800">
+                            <!-- Math will render here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Category Cards -->
+                <div class="grid sm:grid-cols-2 gap-6">
+                    <!-- 오류들 -->
+                    <div class="bg-white p-8 rounded-[2.5rem] card-hover transition-all duration-500 flex flex-col h-full shadow-lg shadow-slate-200/50">
+                        <div class="w-16 h-16 bg-rose-50 rounded-2xl flex items-center justify-center mb-8 text-rose-500">
+                            <i class="fas fa-times-circle text-3xl"></i>
+                        </div>
+                        <h4 class="text-2xl font-black mb-4 text-slate-800">오류들</h4>
+                        <p class="text-slate-500 text-base leading-relaxed">막혔던 길에서 새로운 발견이 시작됩니다. 흥미로운 오답과 그 속의 깨달음을 나누세요.</p>
+                    </div>
+                    
+                    <!-- 의미있는 질문들 -->
+                    <div class="bg-white p-8 rounded-[2.5rem] card-hover transition-all duration-500 flex flex-col h-full shadow-lg shadow-slate-200/50 border-t-4 border-blue-400">
+                        <div class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-8 text-blue-500">
+                            <i class="fas fa-question-circle text-3xl"></i>
+                        </div>
+                        <h4 class="text-2xl font-black mb-4 text-slate-800">의미있는 질문들</h4>
+                        <p class="text-slate-500 text-base leading-relaxed">정답보다 "왜?"라는 호기심에 집중합니다. 깊은 사고를 유도하는 질문들을 공유합니다.</p>
+                    </div>
+
+                    <!-- 유용한 컨텐츠 -->
+                    <div class="bg-white p-8 rounded-[2.5rem] card-hover transition-all duration-500 flex flex-col h-full shadow-lg shadow-slate-200/50">
+                        <div class="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center mb-8 text-emerald-500">
+                            <i class="fas fa-play-circle text-3xl"></i>
+                        </div>
+                        <h4 class="text-2xl font-black mb-4 text-slate-800">유용한 컨텐츠</h4>
+                        <p class="text-slate-500 text-base leading-relaxed">수학을 사랑하는 유튜버, 블로거들의 통찰력 있는 영상과 글을 큐레이션합니다.</p>
+                    </div>
+
+                    <!-- 공부중 -->
+                    <div class="bg-white p-8 rounded-[2.5rem] card-hover transition-all duration-500 flex flex-col h-full shadow-lg shadow-slate-200/50">
+                        <div class="w-16 h-16 bg-amber-50 rounded-2xl flex items-center justify-center mb-8 text-amber-500">
+                            <i class="fas fa-book-open text-3xl"></i>
+                        </div>
+                        <h4 class="text-2xl font-black mb-4 text-slate-800">공부중</h4>
+                        <p class="text-slate-500 text-base leading-relaxed">지금 탐구 중인 주제를 기록하고, 비슷한 흥미를 가진 동료 취미 수학자들과 교류하세요.</p>
+                    </div>
+
+                    <!-- 자료들 -->
+                    <div class="bg-gradient-to-r from-indigo-50 to-blue-50 p-10 rounded-[2.5rem] card-hover transition-all duration-500 flex flex-col h-full sm:col-span-2 border border-blue-100">
+                        <div class="flex flex-col md:flex-row md:items-center gap-8">
+                            <div class="w-20 h-20 bg-white rounded-3xl flex items-center justify-center text-indigo-600 shadow-lg shrink-0">
+                                <i class="fas fa-folder-open text-4xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-2xl font-black mb-4 text-slate-800">자료들</h4>
+                                <p class="text-slate-500 text-lg leading-relaxed font-medium">증명 모음집, 시각화 도구, 심화 논문 등 hobbymaths 멤버들이 직접 구축한 수학 라이브러리입니다.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-24 border-t border-slate-200 bg-white relative">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <div class="flex flex-col items-center gap-8">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center overflow-hidden shadow-sm border border-slate-200">
+                        <img src="LEE.png" 
+                             alt="hobbymaths logo" 
+                             class="w-full h-full object-cover"
+                             onerror="this.onerror=null; this.src='https://placehold.co/100x100/1e293b/white?text=LEE';">
+                    </div>
+                    <span class="text-2xl font-black text-slate-800">hobbymaths</span>
+                </div>
+                <p class="text-slate-400 font-medium max-w-sm">수학이 모두의 즐거운 일상이 되는 세상을 꿈꿉니다.</p>
+                <div class="flex gap-8 text-slate-300 text-2xl">
+                    <a href="#" class="hover:text-blue-500 transition-colors"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="hover:text-blue-500 transition-colors"><i class="fab fa-youtube"></i></a>
+                    <a href="#" class="hover:text-blue-500 transition-colors"><i class="fab fa-github"></i></a>
+                </div>
+                <p class="text-slate-400 text-xs mt-12 tracking-widest uppercase">© 2024 hobbymaths. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('bg-canvas');
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 25;
+
+        const group = new THREE.Group();
+        scene.add(group);
+
+        // Particle space - More visible on light background
+        const particlesCount = 800;
+        const positions = new Float32Array(particlesCount * 3);
+        const colors = new Float32Array(particlesCount * 3);
+        
+        for(let i=0; i<particlesCount * 3; i+=3) {
+            positions[i] = (Math.random() - 0.5) * 80;
+            positions[i+1] = (Math.random() - 0.5) * 80;
+            positions[i+2] = (Math.random() - 0.5) * 80;
+            
+            // Pastel colors for particles
+            colors[i] = 0.5 + Math.random() * 0.5; // R
+            colors[i+1] = 0.6 + Math.random() * 0.4; // G
+            colors[i+2] = 0.9 + Math.random() * 0.1; // B
+        }
+        
+        const particlesGeometry = new THREE.BufferGeometry();
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+        
+        const particlesMaterial = new THREE.PointsMaterial({ 
+            size: 0.15, 
+            vertexColors: true,
+            transparent: true, 
+            opacity: 0.6 
+        });
+        const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particles);
+
+        // Geometrical shape - Soft blue wireframe
+        const geometry = new THREE.IcosahedronGeometry(12, 1);
+        const material = new THREE.MeshPhongMaterial({
+            color: 0x3b82f6,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.1
+        });
+        const mesh = new THREE.Mesh(geometry, material);
+        group.add(mesh);
+
+        const light = new THREE.DirectionalLight(0xffffff, 1);
+        light.position.set(1, 1, 1);
+        scene.add(light);
+        scene.add(new THREE.AmbientLight(0xeeeeee));
+
+        function animate() {
+            requestAnimationFrame(animate);
+            group.rotation.y += 0.0012;
+            group.rotation.x += 0.0005;
+            particles.rotation.y += 0.0002;
+            renderer.render(scene, camera);
+        }
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        const mathInput = document.getElementById('math-input');
+        const mathPreview = document.getElementById('math-preview');
+
+        function updateMath() {
+            const input = mathInput.value.trim() || 'f(x) = \\int_{-\\infty}^{\\infty} e^{-x^2} dx = \\sqrt{\\pi}';
+            try {
+                katex.render(input, mathPreview, {
+                    throwOnError: false,
+                    displayMode: true
+                });
+            } catch (err) {
+                console.error("Math rendering error:", err);
+            }
+        }
+
+        mathInput.addEventListener('input', updateMath);
+
+        window.onload = () => {
+            animate();
+            updateMath();
+        };
+    </script>
+</body>
+</html>
