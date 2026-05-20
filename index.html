@@ -8,7 +8,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Noto+Sans+KR:wght@300;400;700;900&display=swap" rel="stylesheet">
     <style>
         body {
@@ -67,10 +67,10 @@
                 <span class="text-2xl font-black tracking-tighter text-slate-800">hobbymaths</span>
             </div>
             <div class="hidden md:flex items-center space-x-10 text-sm font-bold text-slate-600">
-                <a href="#" class="hover:text-blue-600 transition-colors">매일 챌린지</a>
-                <a href="#" class="hover:text-pink-600 transition-colors">수학 갤러리</a>
-                <a href="#" class="hover:text-amber-600 transition-colors">플레이그라운드</a>
-                <button class="bg-slate-900 text-white px-7 py-3 rounded-2xl font-bold hover:bg-blue-600 transition-all duration-300 shadow-lg shadow-slate-900/10">
+                <a href="#feed-section" class="hover:text-blue-600 transition-colors">매일 챌린지</a>
+                <a href="#feed-section" class="hover:text-pink-600 transition-colors">수학 갤러리</a>
+                <a href="#feed-section" class="hover:text-amber-600 transition-colors">플레이그라운드</a>
+                <button onclick="scrollToFeed('all')" class="bg-slate-900 text-white px-7 py-3 rounded-2xl font-bold hover:bg-blue-600 transition-all duration-300 shadow-lg shadow-slate-900/10">
                     시작하기
                 </button>
             </div>
@@ -96,82 +96,129 @@
                 세상을 이해하는 가장 순수한 도구, 수학이 당신의 새로운 취미가 됩니다.
             </p>
             <div class="flex flex-col sm:flex-row justify-center gap-6">
-                <button class="px-10 py-5 bg-blue-600 text-white rounded-3xl font-black text-xl shadow-2xl shadow-blue-500/40 hover:scale-105 transition-all">
-                    취미활동 하기
+                <button onclick="scrollToFeed('all')" class="px-10 py-5 bg-blue-600 text-white rounded-3xl font-black text-xl shadow-2xl shadow-blue-500/40 hover:scale-105 transition-all">
+                    취미활동 하러 가기
                 </button>
             </div>
         </div>
     </section>
 
-    <section class="py-24 px-6">
+    <!-- Interactive Feed & Category Section -->
+    <section id="feed-section" class="py-24 px-6 scroll-mt-24">
         <div class="max-w-7xl mx-auto">
             <div class="grid lg:grid-cols-2 gap-12 items-start mb-24">
-                <!-- Sandbox Card -->
-                <div class="bg-white p-10 rounded-[3rem] shadow-2xl shadow-blue-900/5 border border-white sticky top-28">
-                    <h3 class="text-3xl font-black mb-8 flex items-center gap-4 text-slate-800">
-                        <span class="w-12 h-12 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center">
-                            <i class="fas fa-pencil-alt"></i>
+                
+                <!-- Sandbox/Hobby Feed Card (Left Side) -->
+                <div class="bg-white p-8 md:p-10 rounded-[3rem] shadow-2xl shadow-blue-900/5 border border-slate-100 sticky top-28">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                        <h3 class="text-3xl font-black flex items-center gap-4 text-slate-800">
+                            <span class="w-12 h-12 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center">
+                                <i class="fas fa-chart-line"></i>
+                            </span>
+                            취미활동 중...
+                        </h3>
+                        <span id="current-category-badge" class="px-4 py-2 bg-blue-50 text-blue-600 rounded-2xl text-xs font-bold self-start sm:self-auto uppercase tracking-wider">
+                            전체 보기
                         </span>
-                        수식으로 그리는 생각
-                    </h3>
-                    <p class="text-slate-500 mb-10 font-medium leading-relaxed">복잡한 증명도, 간단한 정리도 좋습니다. 당신만의 언어로 수학을 기록해보세요.</p>
-                    <div class="space-y-8">
-                        <div class="relative">
-                            <textarea id="math-input" class="w-full bg-slate-50 border border-slate-200 rounded-3xl p-6 text-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-500/10 font-mono text-xl h-40 transition-all placeholder:text-slate-300" placeholder="LaTeX 수식을 입력해보세요..."></textarea>
-                            <div class="absolute bottom-4 right-6 text-xs text-slate-400 font-bold">LIVE PREVIEW</div>
+                    </div>
+                    
+                    <p class="text-slate-500 mb-8 font-medium leading-relaxed">
+                        우측의 카드를 클릭하여 카테고리별로 실시간 업데이트되는 취미기록들을 확인해보세요.
+                    </p>
+
+                    <!-- Add New Hobby Activity Form (Toggleable) -->
+                    <div class="mb-8">
+                        <button onclick="toggleWriteForm()" class="w-full py-4 bg-slate-50 hover:bg-slate-100 border-2 border-dashed border-slate-200 hover:border-blue-400 rounded-2xl text-slate-500 hover:text-blue-600 font-bold transition-all flex items-center justify-center gap-3">
+                            <i class="fas fa-plus"></i> 나도 취미 기록 남기기
+                        </button>
+                        
+                        <div id="write-form" class="hidden mt-6 p-6 bg-slate-50 rounded-[2rem] border border-slate-200/60 space-y-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <input id="author-name" type="text" placeholder="닉네임" value="취미수학가" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <select id="post-category" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="errors">오류들</option>
+                                    <option value="questions">의미있는 질문들</option>
+                                    <option value="contents">유용한 컨텐츠</option>
+                                    <option value="reading">외전 취미(독서)</option>
+                                    <option value="resources">자료들</option>
+                                </select>
+                            </div>
+                            <input id="post-title" type="text" placeholder="제목을 입력하세요" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <textarea id="post-content" placeholder="글을 작성하세요. LaTeX 수식도 사용 가능합니다. 예: $e^{i\pi} + 1 = 0$" class="w-full bg-white border border-slate-200 rounded-2xl p-4 text-sm font-medium h-32 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"></textarea>
+                            <div class="flex justify-end gap-3">
+                                <button onclick="toggleWriteForm()" class="px-5 py-2.5 bg-slate-200 text-slate-700 rounded-xl text-xs font-bold hover:bg-slate-300 transition-all">취소</button>
+                                <button onclick="submitPost()" class="px-5 py-2.5 bg-blue-600 text-white rounded-xl text-xs font-bold hover:bg-blue-700 transition-all shadow-md shadow-blue-500/10">등록하기</button>
+                            </div>
                         </div>
-                        <div id="math-preview" class="w-full h-48 bg-gradient-to-br from-slate-50 to-white rounded-[2.5rem] flex items-center justify-center text-5xl p-10 overflow-hidden border border-slate-100 shadow-inner text-slate-800">
-                            <!-- Math will render here -->
-                        </div>
+                    </div>
+
+                    <!-- Feed Container (Dynamic) -->
+                    <div id="feed-container" class="space-y-6 max-h-[550px] overflow-y-auto pr-2">
+                        <!-- Dynamic Post Cards Load Here -->
                     </div>
                 </div>
                 
-                <!-- Category Cards -->
+                <!-- Category Cards (Right Side) -->
                 <div class="grid sm:grid-cols-2 gap-6">
                     <!-- 오류들 -->
-                    <div class="bg-white p-8 rounded-[2.5rem] card-hover transition-all duration-500 flex flex-col h-full shadow-lg shadow-slate-200/50">
+                    <div onclick="filterCategory('errors')" class="cursor-pointer bg-white p-8 rounded-[2.5rem] card-hover transition-all duration-500 flex flex-col h-full shadow-lg shadow-slate-200/50 border border-transparent hover:border-rose-300">
                         <div class="w-16 h-16 bg-rose-50 rounded-2xl flex items-center justify-center mb-8 text-rose-500">
                             <i class="fas fa-times-circle text-3xl"></i>
                         </div>
-                        <h4 class="text-2xl font-black mb-4 text-slate-800">오류들</h4>
+                        <h4 class="text-2xl font-black mb-4 text-slate-800 flex items-center justify-between">
+                            오류들
+                            <i class="fas fa-chevron-right text-sm text-slate-300"></i>
+                        </h4>
                         <p class="text-slate-500 text-base leading-relaxed">막혔던 길에서 새로운 발견이 시작됩니다. 흥미로운 오답과 그 속의 깨달음을 나누세요.</p>
                     </div>
                     
                     <!-- 의미있는 질문들 -->
-                    <div class="bg-white p-8 rounded-[2.5rem] card-hover transition-all duration-500 flex flex-col h-full shadow-lg shadow-slate-200/50 border-t-4 border-blue-400">
+                    <div onclick="filterCategory('questions')" class="cursor-pointer bg-white p-8 rounded-[2.5rem] card-hover transition-all duration-500 flex flex-col h-full shadow-lg shadow-slate-200/50 border border-transparent hover:border-blue-300">
                         <div class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-8 text-blue-500">
                             <i class="fas fa-question-circle text-3xl"></i>
                         </div>
-                        <h4 class="text-2xl font-black mb-4 text-slate-800">의미있는 질문들</h4>
+                        <h4 class="text-2xl font-black mb-4 text-slate-800 flex items-center justify-between">
+                            의미있는 질문들
+                            <i class="fas fa-chevron-right text-sm text-slate-300"></i>
+                        </h4>
                         <p class="text-slate-500 text-base leading-relaxed">정답보다 "왜?"라는 호기심에 집중합니다. 깊은 사고를 유도하는 질문들을 공유합니다.</p>
                     </div>
 
                     <!-- 유용한 컨텐츠 -->
-                    <div class="bg-white p-8 rounded-[2.5rem] card-hover transition-all duration-500 flex flex-col h-full shadow-lg shadow-slate-200/50">
+                    <div onclick="filterCategory('contents')" class="cursor-pointer bg-white p-8 rounded-[2.5rem] card-hover transition-all duration-500 flex flex-col h-full shadow-lg shadow-slate-200/50 border border-transparent hover:border-emerald-300">
                         <div class="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center mb-8 text-emerald-500">
                             <i class="fas fa-play-circle text-3xl"></i>
                         </div>
-                        <h4 class="text-2xl font-black mb-4 text-slate-800">유용한 컨텐츠</h4>
+                        <h4 class="text-2xl font-black mb-4 text-slate-800 flex items-center justify-between">
+                            유용한 컨텐츠
+                            <i class="fas fa-chevron-right text-sm text-slate-300"></i>
+                        </h4>
                         <p class="text-slate-500 text-base leading-relaxed">수학을 사랑하는 유튜버, 블로거들의 통찰력 있는 영상과 글을 큐레이션합니다.</p>
                     </div>
 
-                    <!-- 공부중 -->
-                    <div class="bg-white p-8 rounded-[2.5rem] card-hover transition-all duration-500 flex flex-col h-full shadow-lg shadow-slate-200/50">
+                    <!-- 외전 취미(독서) -->
+                    <div onclick="filterCategory('reading')" class="cursor-pointer bg-white p-8 rounded-[2.5rem] card-hover transition-all duration-500 flex flex-col h-full shadow-lg shadow-slate-200/50 border border-transparent hover:border-amber-300">
                         <div class="w-16 h-16 bg-amber-50 rounded-2xl flex items-center justify-center mb-8 text-amber-500">
                             <i class="fas fa-book-open text-3xl"></i>
                         </div>
-                        <h4 class="text-2xl font-black mb-4 text-slate-800">공부중</h4>
-                        <p class="text-slate-500 text-base leading-relaxed">지금 탐구 중인 주제를 기록하고, 비슷한 흥미를 가진 동료 취미 수학자들과 교류하세요.</p>
+                        <h4 class="text-2xl font-black mb-4 text-slate-800 flex items-center justify-between">
+                            외전 취미(독서)
+                            <i class="fas fa-chevron-right text-sm text-slate-300"></i>
+                        </h4>
+                        <p class="text-slate-500 text-base leading-relaxed">수학뿐만 아니라 일상 속 지적인 자극을 주는 독서 기록과 생각을 함께 나눕니다.</p>
                     </div>
 
                     <!-- 자료들 -->
-                    <div class="bg-gradient-to-r from-indigo-50 to-blue-50 p-10 rounded-[2.5rem] card-hover transition-all duration-500 flex flex-col h-full sm:col-span-2 border border-blue-100">
+                    <div onclick="filterCategory('resources')" class="cursor-pointer bg-gradient-to-r from-indigo-50 to-blue-50 p-10 rounded-[2.5rem] card-hover transition-all duration-500 flex flex-col h-full sm:col-span-2 border border-blue-100 hover:border-indigo-300">
                         <div class="flex flex-col md:flex-row md:items-center gap-8">
                             <div class="w-20 h-20 bg-white rounded-3xl flex items-center justify-center text-indigo-600 shadow-lg shrink-0">
                                 <i class="fas fa-folder-open text-4xl"></i>
                             </div>
-                            <div>
-                                <h4 class="text-2xl font-black mb-4 text-slate-800">자료들</h4>
+                            <div class="w-full">
+                                <h4 class="text-2xl font-black mb-4 text-slate-800 flex items-center justify-between">
+                                    자료들
+                                    <i class="fas fa-chevron-right text-sm text-slate-400"></i>
+                                </h4>
                                 <p class="text-slate-500 text-lg leading-relaxed font-medium">증명 모음집, 시각화 도구, 심화 논문 등 hobbymaths 멤버들이 직접 구축한 수학 라이브러리입니다.</p>
                             </div>
                         </div>
@@ -205,6 +252,7 @@
     </footer>
 
     <script>
+        // Three.js Background Rendering
         const canvas = document.getElementById('bg-canvas');
         const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
         renderer.setPixelRatio(window.devicePixelRatio);
@@ -217,7 +265,6 @@
         const group = new THREE.Group();
         scene.add(group);
 
-        // Particle space - More visible on light background
         const particlesCount = 800;
         const positions = new Float32Array(particlesCount * 3);
         const colors = new Float32Array(particlesCount * 3);
@@ -227,10 +274,9 @@
             positions[i+1] = (Math.random() - 0.5) * 80;
             positions[i+2] = (Math.random() - 0.5) * 80;
             
-            // Pastel colors for particles
-            colors[i] = 0.5 + Math.random() * 0.5; // R
-            colors[i+1] = 0.6 + Math.random() * 0.4; // G
-            colors[i+2] = 0.9 + Math.random() * 0.1; // B
+            colors[i] = 0.5 + Math.random() * 0.5;
+            colors[i+1] = 0.6 + Math.random() * 0.4;
+            colors[i+2] = 0.9 + Math.random() * 0.1;
         }
         
         const particlesGeometry = new THREE.BufferGeometry();
@@ -246,7 +292,6 @@
         const particles = new THREE.Points(particlesGeometry, particlesMaterial);
         scene.add(particles);
 
-        // Geometrical shape - Soft blue wireframe
         const geometry = new THREE.IcosahedronGeometry(12, 1);
         const material = new THREE.MeshPhongMaterial({
             color: 0x3b82f6,
@@ -276,26 +321,223 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
 
-        const mathInput = document.getElementById('math-input');
-        const mathPreview = document.getElementById('math-preview');
+        // Interactive Feed Mechanism with Math Support
+        const categories = {
+            all: '전체 보기',
+            errors: '오류들',
+            questions: '의미있는 질문들',
+            contents: '유용한 컨텐츠',
+            reading: '외전 취미(독서)',
+            resources: '자료들'
+        };
 
-        function updateMath() {
-            const input = mathInput.value.trim() || 'f(x) = \\int_{-\\infty}^{\\infty} e^{-x^2} dx = \\sqrt{\\pi}';
-            try {
-                katex.render(input, mathPreview, {
-                    throwOnError: false,
-                    displayMode: true
-                });
-            } catch (err) {
-                console.error("Math rendering error:", err);
+        const initialPosts = [
+            {
+                id: 1,
+                category: 'errors',
+                author: '오류사냥꾼',
+                title: '$0.999... = 1$ 증명 중 제가 마주친 논리적 함정',
+                content: '보통 고등학교에서 $x = 0.999...$라 두고 $10x = 9.999...$를 이용해 빼서 증명하는데요, 극한의 수렴성($\\lim$)을 엄밀히 정의하지 않고 이를 산술 계산하는 것의 약점을 토론해봤습니다. 무한을 유한처럼 다루는 것이 바로 흔한 오류의 첫 단추더군요!',
+                likes: 24,
+                time: '방금 전'
+            },
+            {
+                id: 2,
+                category: 'questions',
+                author: '호기심천국',
+                title: '소수의 간격에서 찾은 이상한 규칙성 (울람 나선)',
+                content: '정수들을 나선형으로 배열하고 소수만 색칠했더니 대각선 모양의 직선들이 보였습니다! 소수($p$)가 단순 무작위가 아니라는 이 경이로운 $Ulam\\ Spiral$의 기하학적 매력에 대해 질문을 던져봅니다. 과연 다른 진법에서도 동일하게 나타날까요?',
+                likes: 42,
+                time: '12분 전'
+            },
+            {
+                id: 3,
+                category: 'contents',
+                author: '수학애호가',
+                title: '시각화의 제왕 3Blue1Brown 선형대수 영상 강추!',
+                content: '벡터 곱($A \\vec{x} = \\vec{b}$)을 단순 계산이 아니라 선형 변환과 공간의 왜곡으로 눈으로 보여주는 시리즈는 가히 예술입니다. 수학이 왜 취미가 될 수 있는지 직관적으로 증명하는 콘텐츠네요.',
+                likes: 38,
+                time: '45분 전'
+            },
+            {
+                id: 4,
+                category: 'reading',
+                author: '책벌레수학',
+                title: '『페르마의 마지막 정리』 - 한 수학자의 평생의 집념',
+                content: '사이먼 싱의 명작을 읽었습니다. $x^n + y^n = z^n \\ (n \\ge 3)$의 정수해가 없음을 밝히기 위해 350년간 수많은 천재들이 바친 인생의 서사가 소설보다 더 짜릿하더군요. 강력 추천합니다.',
+                likes: 51,
+                time: '2시간 전'
+            },
+            {
+                id: 5,
+                category: 'resources',
+                author: '자료창고',
+                title: '세상에서 가장 아름다운 수식 $e^{i\\pi} + 1 = 0$ 유도 자료 정리',
+                content: '오일러 공식과 테일러 급수($e^x, \\sin x, \\cos x$)를 활용해 완벽하게 유도하는 한 장짜리 자필 정리본입니다. 수학적 심미성을 극대화하는 증명법을 직접 인쇄해서 벽에 붙여보세요.',
+                likes: 89,
+                time: '5시간 전'
+            },
+            {
+                id: 6,
+                category: 'errors',
+                author: '실수학파',
+                title: '$1 = 2$ 증명 오류? 나누기 0의 치명적인 함정',
+                content: '$a=b$일 때 $a^2 = ab \\Rightarrow a^2 - b^2 = ab - b^2 \\Rightarrow (a-b)(a+b) = b(a-b)$에서 양변을 $a-b$로 나누는 실수! $a-b=0$이므로 나눌 수 없다는 수학적 철칙을 다시 새깁니다.',
+                likes: 15,
+                time: '1일 전'
+            }
+        ];
+
+        let currentCategory = 'all';
+        let posts = [...initialPosts];
+
+        function renderFeed() {
+            const container = document.getElementById('feed-container');
+            container.innerHTML = '';
+
+            const filteredPosts = currentCategory === 'all' 
+                ? posts 
+                : posts.filter(post => post.category === currentCategory);
+
+            if (filteredPosts.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 text-slate-400 font-medium">
+                        <i class="fas fa-inbox text-4xl mb-3"></i>
+                        <p>등록된 첫 취미활동의 주인공이 되어보세요!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filteredPosts.forEach(post => {
+                const card = document.createElement('div');
+                card.className = 'p-6 rounded-2xl bg-slate-50 border border-slate-100/70 hover:shadow-md hover:bg-white transition-all duration-300';
+                
+                // Color mapping for tags
+                let tagColor = 'bg-blue-50 text-blue-600';
+                if (post.category === 'errors') tagColor = 'bg-rose-50 text-rose-600';
+                if (post.category === 'questions') tagColor = 'bg-blue-50 text-blue-600';
+                if (post.category === 'contents') tagColor = 'bg-emerald-50 text-emerald-600';
+                if (post.category === 'reading') tagColor = 'bg-amber-50 text-amber-600';
+                if (post.category === 'resources') tagColor = 'bg-indigo-50 text-indigo-600';
+
+                card.innerHTML = `
+                    <div class="flex items-center justify-between gap-2 mb-3">
+                        <span class="px-3 py-1 rounded-full text-xs font-bold ${tagColor}">
+                            ${categories[post.category]}
+                        </span>
+                        <span class="text-xs text-slate-400 font-semibold">${post.time}</span>
+                    </div>
+                    <h4 class="text-lg font-bold text-slate-800 mb-2">${post.title}</h4>
+                    <p class="text-sm text-slate-500 leading-relaxed mb-4 whitespace-pre-line text-content-math">${post.content}</p>
+                    <div class="flex items-center justify-between border-t border-slate-100 pt-3">
+                        <span class="text-xs font-bold text-slate-400 flex items-center gap-1.5">
+                            <i class="fas fa-user-circle text-sm"></i> ${post.author}
+                        </span>
+                        <button onclick="likePost(${post.id}, this)" class="flex items-center gap-1.5 text-xs font-bold text-rose-400 hover:text-rose-600 transition-colors">
+                            <i class="fas fa-heart"></i> <span class="like-count">${post.likes}</span>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            // Trigger KaTeX rendering on new posts
+            renderMathContent();
+        }
+
+        function filterCategory(catKey) {
+            currentCategory = catKey;
+            
+            // Update badge text
+            const badge = document.getElementById('current-category-badge');
+            badge.innerText = categories[catKey];
+            
+            // Color variations for badge
+            badge.className = 'px-4 py-2 rounded-2xl text-xs font-bold self-start sm:self-auto uppercase tracking-wider ';
+            if (catKey === 'errors') badge.className += 'bg-rose-50 text-rose-600';
+            else if (catKey === 'questions') badge.className += 'bg-blue-50 text-blue-600';
+            else if (catKey === 'contents') badge.className += 'bg-emerald-50 text-emerald-600';
+            else if (catKey === 'reading') badge.className += 'bg-amber-50 text-amber-600';
+            else if (catKey === 'resources') badge.className += 'bg-indigo-50 text-indigo-600';
+            else badge.className += 'bg-slate-100 text-slate-600';
+
+            renderFeed();
+            scrollToFeed();
+        }
+
+        function scrollToFeed(catKey) {
+            if (catKey) filterCategory(catKey);
+            document.getElementById('feed-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function toggleWriteForm() {
+            const form = document.getElementById('write-form');
+            form.classList.toggle('hidden');
+        }
+
+        function submitPost() {
+            const author = document.getElementById('author-name').value.trim() || '익명의 수학자';
+            const category = document.getElementById('post-category').value;
+            const title = document.getElementById('post-title').value.trim() || '수학 이야기';
+            const content = document.getElementById('post-content').value.trim();
+
+            if (!content) {
+                alert('내용을 입력해 주세요.');
+                return;
+            }
+
+            const newPost = {
+                id: Date.now(),
+                category: category,
+                author: author,
+                title: title,
+                content: content,
+                likes: 0,
+                time: '방금 전'
+            };
+
+            // Prepend new post (recently updated)
+            posts.unshift(newPost);
+            
+            // Reset input fields
+            document.getElementById('post-title').value = '';
+            document.getElementById('post-content').value = '';
+            
+            toggleWriteForm();
+            filterCategory(category); // Show the category of the newly submitted post
+        }
+
+        function likePost(id, btnElement) {
+            const post = posts.find(p => p.id === id);
+            if (post) {
+                post.likes += 1;
+                btnElement.querySelector('.like-count').innerText = post.likes;
+                // Simple animation
+                btnElement.classList.add('scale-125');
+                setTimeout(() => btnElement.classList.remove('scale-125'), 200);
             }
         }
 
-        mathInput.addEventListener('input', updateMath);
+        function renderMathContent() {
+            const mathElements = document.querySelectorAll('.text-content-math, h4');
+            mathElements.forEach(el => {
+                const text = el.innerHTML;
+                // Simple inline $...$ parsing for preview demonstration
+                const parsedText = text.replace(/\$([^\$]+)\$/g, (match, formula) => {
+                    try {
+                        return katex.renderToString(formula, { displayMode: false, throwOnError: false });
+                    } catch (e) {
+                        return match;
+                    }
+                });
+                el.innerHTML = parsedText;
+            });
+        }
 
         window.onload = () => {
             animate();
-            updateMath();
+            renderFeed();
         };
     </script>
 </body>
